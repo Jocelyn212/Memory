@@ -16,14 +16,42 @@
                 src="https://res.cloudinary.com/pruebaweb/image/upload/v1730989960/Mask_Group-2_iq2qlx.png" alt="Logo">
             <img class="h-24 mt-10 ml-4"
                 src="https://res.cloudinary.com/pruebaweb/image/upload/v1730990662/615cd27110121df3b8aa4cd89a42e98c_by3snz.png"
-                alt="memory">
+                alt="memoria">
         </header>
-        <article class=" flex  justify-center min-h-screen mt-20">
+
+        <div id="level-buttons" class="flex justify-center mt-4">
+            <button id="level-basic" class="level-button p-4 rounded h-6 mb-4"><img
+                    src="https://res.cloudinary.com/pruebaweb/image/upload/v1731007625/28913efc08d017ee44d93c6ab86cd08b_yzyi0m.png"
+                    alt=""></button>
+            <button id="level-medium" class="level-button p-4 rounded h-6 mb-4"><img
+                    src="https://res.cloudinary.com/pruebaweb/image/upload/v1731007625/b898f548b6874c9064d546f74ed259d8_evdg0g.png"
+                    alt=""></button>
+            <button id="level-hard" class="level-button p-4 rounded h-6 mb-4"><img
+                    src="https://res.cloudinary.com/pruebaweb/image/upload/v1731007625/e11b56e92aa0c4f9aa610bb237f84e43_av6v8b.png"
+                    alt=""></button>
+        </div>
+
+        <div id="timer" class="text-center text-yellow-50 font-semibold text-xl mt-4">
+            Tiempo restante: 120 segundos
+        </div>
+
+        <article class="flex justify-center min-h-screen mt-8">
             <div>
                 <div id="game-board" class="grid grid-cols-6 gap-2"></div>
-                <button id="restart" class="mt-4 p-2 bg-blue-500 text-white rounded w-full">Restart</button>
+                <div class="flex justify-center">
+                    <button id="restart" class="mt-4 p-2 rounded h-24 text-center "><img
+                            src="https://res.cloudinary.com/pruebaweb/image/upload/v1731008428/1ac79af41057328043a9561a68e12c4e_af6fpl.png"
+                            alt=""></button>
+                </div>
             </div>
         </article>
+
+        <div id="gameover-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+            <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full mx-4">
+                <!-- El contenido se insertará dinámicamente -->
+            </div>
+        </div>
+
         <script src="app.js"></script>
     </body>
 </body>

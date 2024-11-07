@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Memoria</title>
+    <link rel="stylesheet" href="output.css" />
+    <style>
+        .card {
+            width: 120px;
+            height: 150px;
+            background-image: url('https://res.cloudinary.com/pruebaweb/image/upload/v1730984728/Captura_de_pantalla_2024-11-07_a_las_14.05.16_alkcql.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: transform 0.5s;
+        }
+
+        .flipped {
+            transform: rotateY(180deg);
+        }
+
+        body {
+            background-image: url('https://res.cloudinary.com/pruebaweb/image/upload/v1730988254/Captura_de_pantalla_2024-11-07_a_las_15.03.56_xoapac.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .modal-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="flex justify-center">
+        <img class="h-44 mt-2"
+            src="https://res.cloudinary.com/pruebaweb/image/upload/v1730989960/Mask_Group-2_iq2qlx.png" alt="Logo">
+        <img class="h-24 mt-10 ml-4"
+            src="https://res.cloudinary.com/pruebaweb/image/upload/v1730990662/615cd27110121df3b8aa4cd89a42e98c_by3snz.png"
+            alt="memoria">
+    </header>
+
+    <div id="level-buttons" class="flex justify-center mt-4">
+        <button id="level-basic" class="level-button p-2 bg-green-500 text-white rounded">Básico</button>
+        <button id="level-medium" class="level-button p-2 bg-yellow-500 text-white rounded ml-4">Medio</button>
+        <button id="level-hard" class="level-button p-2 bg-red-500 text-white rounded ml-2">Difícil</button>
+    </div>
+
+    <div id="timer" class="text-center text-yellow-50 font-semibold text-xl mt-4">
+        Tiempo restante: 120 segundos
+    </div>
+
+    <article class="flex justify-center min-h-screen mt-8">
+        <div>
+            <div id="game-board" class="grid grid-cols-6 gap-2"></div>
+            <button id="restart" class="mt-4 p-2 bg-blue-500 text-white rounded w-full">Reiniciar</button>
+        </div>
+    </article>
+
+    <div id="gameover-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full mx-4">
+            <!-- El contenido se insertará dinámicamente -->
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentLevel = 'level-hard';
+        const imagePaths = [
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730978813/Captura_de_pantalla_2024-11-07_a_las_12.25.02_kvumvd.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730978813/Captura_de_pantalla_2024-11-07_a_las_12.25.25_ft2cea.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730978813/Captura_de_pantalla_2024-11-07_a_las_12.24.21_bhzkwz.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730978813/Captura_de_pantalla_2024-11-07_a_las_12.25.36_iaajbe.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730978814/Captura_de_pantalla_2024-11-07_a_las_12.24.33_w4xugx.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730978813/Captura_de_pantalla_2024-11-07_a_las_12.24.53_szuvo6.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730978814/Captura_de_pantalla_2024-11-07_a_las_12.24.45_n0aico.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730978814/Captura_de_pantalla_2024-11-07_a_las_12.24.10_aj2xxg.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730978815/Captura_de_pantalla_2024-11-07_a_las_12.25.17_bozbq0.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730980029/Captura_de_pantalla_2024-11-07_a_las_12.43.45_j0c7ve.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730980029/Captura_de_pantalla_2024-11-07_a_las_12.41.49_tnj9io.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730980029/Captura_de_pantalla_2024-11-07_a_las_12.39.12_hlvxyg.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730980029/Captura_de_pantalla_2024-11-07_a_las_12.43.18_phda8e.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730980137/Captura_de_pantalla_2024-11-07_a_las_12.48.20_hcaaa3.png',
+            'https://res.cloudinary.com/pruebaweb/image/upload/v1730980137/Captura_de_pantalla_2024-11-07_a_las_12.47.24_xjvaqj.png',
+        ];
+
+        let flippedCards = [];
+        let matchedCards = new Set();
+        let timer;
+        let timeRemaining = 120;
+        let score = 0;
+
+        const levels = {
+            'level-basic': 6,    // 12 cartas (6 pares)
+            'level-medium': 10,  // 20 cartas (10 pares)
+            'level-hard': 15     // 30 cartas (15 pares)
+        };
+
+        const basePoints = {
+            'level-basic': 1000,
+            'level-medium': 2000,
+            'level-hard': 3000
+        };
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function calculateScore(timeLeft, level) {
+            const timeBonus = timeLeft * 10; // 10 puntos por cada segundo restante
+            return basePoints[level] + timeBonus;
+        }
+
+        function setupBoard(level) {
+            const gameBoard = document.getElementById('game-board');
+            gameBoard.innerHTML = '';
+            const numPairs = levels[level];
+
+            // Seleccionar y duplicar las imágenes para los pares
+            const selectedImages = imagePaths.slice(0, numPairs);
+            const levelCards = [...selectedImages, ...selectedImages];
+            const shuffledCards = shuffle(levelCards);
+
+            // Ajustar columnas según el nivel
+            const columns = level === 'level-basic' ? 4 : level === 'level-medium' ? 5 : 6;
+            gameBoard.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+
+            shuffledCards.forEach((imagePath) => {
+                const card = document.createElement('div');
+                card.className = "card bg-gray-400 flex items-center justify-center";
+                card.dataset.image = imagePath;
+                card.addEventListener('click', () => flipCard(card));
+                gameBoard.appendChild(card);
+            });
+
+            revealCards();
+            startTimer();
+        }
+
+        function revealCards() {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.style.backgroundImage = `url(${card.dataset.image})`;
+                card.style.backgroundSize = 'cover';
+                card.classList.add('flipped');
+            });
+            setTimeout(() => {
+                cards.forEach(card => {
+                    card.style.backgroundImage = '';
+                    card.classList.remove('flipped');
+                });
+            }, 2000);
+        }
+
+        function flipCard(card) {
+            if (flippedCards.length === 2 || matchedCards.has(card) || card.classList.contains('flipped')) return;
+
+            card.style.backgroundImage = `url(${card.dataset.image})`;
+            card.style.backgroundSize = 'cover';
+            card.classList.add('flipped');
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                const [card1, card2] = flippedCards;
+                if (card1.dataset.image === card2.dataset.image) {
+                    matchedCards.add(card1);
+                    matchedCards.add(card2);
+                    flippedCards = [];
+
+                    // Verificar victoria
+                    if (matchedCards.size === levels[currentLevel] * 2) {
+                        showVictoryMessage();
+                    }
+                } else {
+                    setTimeout(() => {
+                        card1.style.backgroundImage = '';
+                        card2.style.backgroundImage = '';
+                        card1.classList.remove('flipped');
+                        card2.classList.remove('flipped');
+                        flippedCards = [];
+                    }, 1000);
+                }
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            timeRemaining = 120;
+            const timerElement = document.getElementById('timer');
+
+            timer = setInterval(() => {
+                timeRemaining--;
+                timerElement.innerText = `Tiempo restante: ${timeRemaining} segundos`;
+
+                if (timeRemaining <= 0) {
+                    showGameOverMessage();
+                }
+            }, 1000);
+        }
+
+        function showVictoryMessage() {
+            clearInterval(timer);
+            const finalScore = calculateScore(timeRemaining, currentLevel);
+
+            const modal = document.getElementById('gameover-modal');
+            const modalContent = modal.querySelector('.bg-white');
+            modalContent.innerHTML = `
+        <h2 class="text-2xl font-bold text-green-600 mb-4">¡Felicitaciones! ¡Has Ganado!</h2>
+        <div class="space-y-2">
+            <p class="text-lg">Nivel: ${currentLevel.replace('level-', '').toUpperCase()}</p>
+            <p class="text-lg">Tiempo restante: ${timeRemaining} segundos</p>
+            <p class="text-lg font-bold">Puntuación: ${finalScore} puntos</p>
+            <p class="text-sm text-gray-600">¡Excelente trabajo! Mientras más rápido resuelvas el juego, más puntos obtendrás.</p>
+        </div>
+        <button id="close-modal" class="mt-6 p-2 bg-green-500 text-white rounded w-full hover:bg-green-600">
+            Jugar de nuevo
+        </button>
+    `;
+            modal.classList.remove('hidden');
+        }
+
+        function showGameOverMessage() {
+            clearInterval(timer);
+
+            const modal = document.getElementById('gameover-modal');
+            const modalContent = modal.querySelector('.bg-white');
+            modalContent.innerHTML = `
+        <h2 class="text-2xl font-bold text-red-600 mb-4">¡Tiempo Agotado!</h2>
+        <div class="space-y-2">
+            <p class="text-lg">No lograste encontrar todos los pares a tiempo.</p>
+            <p class="text-lg">Pares encontrados: ${matchedCards.size / 2} de ${levels[currentLevel]}</p>
+        </div>
+        <button id="close-modal" class="mt-6 p-2 bg-blue-500 text-white rounded w-full hover:bg-blue-600">
+            Intentar de nuevo
+        </button>
+    `;
+            modal.classList.remove('hidden');
+        }
+
+        function restartGame(level = currentLevel) {
+            matchedCards.clear();
+            flippedCards = [];
+            timeRemaining = 120;
+            document.getElementById('gameover-modal').classList.add('hidden');
+            setupBoard(level);
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Event listeners para los botones de nivel
+            document.getElementById('level-basic').addEventListener('click', function () {
+                currentLevel = 'level-basic';
+                restartGame('level-basic');
+            });
+
+            document.getElementById('level-medium').addEventListener('click', function () {
+                currentLevel = 'level-medium';
+                restartGame('level-medium');
+            });
+
+            document.getElementById('level-hard').addEventListener('click', function () {
+                currentLevel = 'level-hard';
+                restartGame('level-hard');
+            });
+
+            // Event listener para el botón de reinicio
+            document.getElementById('restart').addEventListener('click', () => {
+                restartGame(currentLevel);
+            });
+
+            // Event listener para el botón de cerrar modal
+            const modal = document.getElementById('gameover-modal');
+            modal.addEventListener('click', (e) => {
+                if (e.target.id === 'close-modal') {
+                    modal.classList.add('hidden');
+                    restartGame(currentLevel);
+                }
+            });
+
+            // Iniciar el juego
+            setupBoard(currentLevel);
+        });
+    </script>
+</body>
+
+</html>
