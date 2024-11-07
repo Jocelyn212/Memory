@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --------Estilos memori-------- */
+
+.card {
+  width: 120px;
+  height: 150px;
+  background-image: url('https://res.cloudinary.com/pruebaweb/image/upload/v1730984728/Captura_de_pantalla_2024-11-07_a_las_14.05.16_alkcql.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 0.5s;
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+body {
+  background-image: url('https://res.cloudinary.com/pruebaweb/image/upload/v1730988254/Captura_de_pantalla_2024-11-07_a_las_15.03.56_xoapac.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
