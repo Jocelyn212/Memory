@@ -236,8 +236,49 @@ function restartGame(level = 'level-hard') {
 // Inicializar el tablero al cargar la página
 setupBoard(); */
 
+
+
+
+// URL de la música de fondo
+const music = new Audio('./juego-de-tronos-1.mp3');
+music.loop = true; // Configura la música para que se reproduzca en bucle
+
+// Variable de estado para el control de música
+let isMusicPlaying = false;
+
+// Función para iniciar la música en el primer clic del usuario
+function startMusic() {
+    if (!isMusicPlaying) {
+        music.play();
+        isMusicPlaying = true;
+    }
+    // Remueve el evento para que no siga intentando iniciar la música después del primer clic
+    document.removeEventListener('click', startMusic);
+}
+
+// Escucha el primer clic del usuario en el documento
+document.addEventListener('click', startMusic);
+
+// Control del botón de música
+const musicControlButton = document.getElementById('music-control');
+musicControlButton.addEventListener('click', () => {
+    if (isMusicPlaying) {
+        music.pause();
+        musicControlButton.innerHTML = '<i class="fas fa-volume-mute"></i>'; // Ícono de "mute"
+        isMusicPlaying = false;
+    } else {
+        music.play();
+        musicControlButton.innerHTML = '<i class="fas fa-music"></i>'; // Ícono de "play"
+        isMusicPlaying = true;
+    }
+});
+
+
+
+
+
 // Variables globales
-let currentLevel = 'level-hard';
+let currentLevel = 'level-basic';
 const imagePaths = [
     'https://res.cloudinary.com/pruebaweb/image/upload/v1730978813/Captura_de_pantalla_2024-11-07_a_las_12.25.02_kvumvd.png',
     'https://res.cloudinary.com/pruebaweb/image/upload/v1730978813/Captura_de_pantalla_2024-11-07_a_las_12.25.25_ft2cea.png',

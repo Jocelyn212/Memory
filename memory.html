@@ -60,7 +60,13 @@
             src="https://res.cloudinary.com/pruebaweb/image/upload/v1730990662/615cd27110121df3b8aa4cd89a42e98c_by3snz.png"
             alt="memoria">
     </header>
+    <!-- Elemento de audio para sonido de fondo -->
+    <audio id="background-music" src="./juego-de-tronos-1.mp3" loop autoplay></audio>
 
+    <!-- Botón para controlar el audio -->
+    <div id="audio-control" class="fixed top-2 right-2 p-2 bg-gray-700 text-white rounded cursor-pointer">
+        Desactivar Audio
+    </div>
     <div id="level-buttons" class="flex justify-center mt-4">
         <button id="level-basic" class="level-button p-2 bg-green-500 text-white rounded">Básico</button>
         <button id="level-medium" class="level-button p-2 bg-yellow-500 text-white rounded ml-4">Medio</button>
@@ -85,6 +91,29 @@
     </div>
 
     <script>
+        // Control de audio
+        document.addEventListener('DOMContentLoaded', () => {
+            const backgroundMusic = document.getElementById('background-music');
+            const audioControl = document.getElementById('audio-control');
+
+            // Reproduce el audio automáticamente al cargar la página
+            backgroundMusic.play()
+                .catch(error => {
+                    // Si el navegador bloquea la reproducción automática, permite al usuario activarla manualmente
+                    audioControl.textContent = 'Activar Audio';
+                });
+
+            // Event listener para el botón de control de audio
+            audioControl.addEventListener('click', function () {
+                if (backgroundMusic.paused) {
+                    backgroundMusic.play();
+                    this.textContent = 'Desactivar Audio';
+                } else {
+                    backgroundMusic.pause();
+                    this.textContent = 'Activar Audio';
+                }
+            });
+        });
         // Variables globales
         let currentLevel = 'level-hard';
         const imagePaths = [
@@ -176,6 +205,7 @@
                 });
             }, 2000);
         }
+
 
         function flipCard(card) {
             if (flippedCards.length === 2 || matchedCards.has(card) || card.classList.contains('flipped')) return;
