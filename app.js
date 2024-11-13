@@ -239,36 +239,36 @@ setupBoard(); */
 
 
 
-// URL de la música de fondo
-const music = new Audio('./juego-de-tronos-1.mp3');
-music.loop = true; // Configura la música para que se reproduzca en bucle
 
-// Variable de estado para el control de música
+const music = new Audio('./juego-de-tronos-1.mp3');
+music.loop = true; 
+
+
 let isMusicPlaying = false;
 
-// Función para iniciar la música en el primer clic del usuario
+
 function startMusic() {
     if (!isMusicPlaying) {
         music.play();
         isMusicPlaying = true;
     }
-    // Remueve el evento para que no siga intentando iniciar la música después del primer clic
+    
     document.removeEventListener('click', startMusic);
 }
 
-// Escucha el primer clic del usuario en el documento
+
 document.addEventListener('click', startMusic);
 
-// Control del botón de música
+
 const musicControlButton = document.getElementById('music-control');
 musicControlButton.addEventListener('click', () => {
     if (isMusicPlaying) {
         music.pause();
-        musicControlButton.innerHTML = '<i class="fas fa-volume-mute"></i>'; // Ícono de "mute"
+        musicControlButton.innerHTML = '<i class="fas fa-volume-mute"></i>'; 
         isMusicPlaying = false;
     } else {
         music.play();
-        musicControlButton.innerHTML = '<i class="fas fa-music"></i>'; // Ícono de "play"
+        musicControlButton.innerHTML = '<i class="fas fa-music"></i>'; 
         isMusicPlaying = true;
     }
 });
@@ -277,7 +277,7 @@ musicControlButton.addEventListener('click', () => {
 
 
 
-// Variables globales
+
 let currentLevel = 'level-basic';
 const imagePaths = [
     'https://res.cloudinary.com/pruebaweb/image/upload/v1730978813/Captura_de_pantalla_2024-11-07_a_las_12.25.02_kvumvd.png',
@@ -304,9 +304,9 @@ let timeRemaining = 120;
 let score = 0;
 
 const levels = {
-    'level-basic': 6,    // 12 cartas (6 pares)
-    'level-medium': 10,  // 20 cartas (10 pares)
-    'level-hard': 15     // 30 cartas (15 pares)
+    'level-basic': 6,    
+    'level-medium': 10,  
+    'level-hard': 15     
 };
 
 const basePoints = {
@@ -324,7 +324,7 @@ function shuffle(array) {
 }
 
 function calculateScore(timeLeft, level) {
-    const timeBonus = timeLeft * 10; // 10 puntos por cada segundo restante
+    const timeBonus = timeLeft * 10; 
     return basePoints[level] + timeBonus;
 }
 
@@ -333,12 +333,12 @@ function setupBoard(level) {
     gameBoard.innerHTML = '';
     const numPairs = levels[level];
 
-    // Seleccionar y duplicar las imágenes para los pares
+    
     const selectedImages = imagePaths.slice(0, numPairs);
     const levelCards = [...selectedImages, ...selectedImages];
     const shuffledCards = shuffle(levelCards);
 
-    // Ajustar columnas según el nivel
+    
     const columns = level === 'level-basic' ? 4 : level === 'level-medium' ? 5 : 6;
     gameBoard.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
 
@@ -384,7 +384,7 @@ function flipCard(card) {
             matchedCards.add(card2);
             flippedCards = [];
 
-            // Verificar victoria
+            
             if (matchedCards.size === levels[currentLevel] * 2) {
                 showVictoryMessage();
             }
@@ -462,9 +462,9 @@ function restartGame(level = currentLevel) {
     setupBoard(level);
 }
 
-// Event Listeners
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Event listeners para los botones de nivel
+    
     document.getElementById('level-basic').addEventListener('click', function () {
         currentLevel = 'level-basic';
         restartGame('level-basic');
@@ -480,12 +480,12 @@ document.addEventListener('DOMContentLoaded', () => {
         restartGame('level-hard');
     });
 
-    // Event listener para el botón de reinicio
+    
     document.getElementById('restart').addEventListener('click', () => {
         restartGame(currentLevel);
     });
 
-    // Event listener para el botón de cerrar modal
+    
     const modal = document.getElementById('gameover-modal');
     modal.addEventListener('click', (e) => {
         if (e.target.id === 'close-modal') {
@@ -494,7 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Iniciar el juego
+    
     setupBoard(currentLevel);
 });
 
